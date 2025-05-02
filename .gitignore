@@ -17,7 +17,6 @@ __pycache__/
 *.mkv
 
 # Environment
-.env
 .venv
 env/
 venv/
@@ -29,3 +28,9 @@ ENV/
 # OS specific
 .DS_Store
 Thumbs.db 
+branch_structure.json
+temp_auto_push.bat
+temp_interactive_push.bat
+.gitignore
+config.bat
+node_modules
