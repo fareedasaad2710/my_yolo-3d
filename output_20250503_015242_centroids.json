@@ -1,0 +1,282 @@
+[
+  {
+    "frame_number": 0,
+    "timestamp": 1746226394.6207333,
+    "objects": [
+      {
+        "object_id": 1,
+        "class": "car",
+        "score": 0.7840889096260071,
+        "bbox_2d": [
+          394.57989501953125,
+          352.24639892578125,
+          429.04071044921875,
+          375.54559326171875
+        ],
+        "centroid_2d": [
+          411.810302734375,
+          363.89599609375
+        ],
+        "dimensions_2d": [
+          34.4608154296875,
+          23.2991943359375
+        ],
+        "depth_value": 0.2901960784313726,
+        "centroid_3d": [
+          -0.98,
+          0.45,
+          3.61
+        ],
+        "dimensions_3d": [
+          1.52,
+          1.64,
+          3.85
+        ],
+        "orientation": -0.27,
+        "vehicle_position": {
+          "x": -0.98,
+          "y": 0.45,
+          "z": 3.61,
+          "orientation": -0.27,
+          "time": 0.0
+        },
+        "closest_vehicle": {
+          "object_id": 3,
+          "distance": 0.8
+        }
+      },
+      {
+        "object_id": 2,
+        "class": "car",
+        "score": 0.7838704586029053,
+        "bbox_2d": [
+          132.82225036621094,
+          345.48291015625,
+          216.46385192871094,
+          399.3561706542969
+        ],
+        "centroid_2d": [
+          174.64305114746094,
+          372.4195556640625
+        ],
+        "dimensions_2d": [
+          83.6416015625,
+          53.873260498046875
+        ],
+        "depth_value": 0.48627450980392156,
+        "centroid_3d": [
+          -3.24,
+          0.7,
+          5.38
+        ],
+        "dimensions_3d": [
+          1.52,
+          1.64,
+          3.85
+        ],
+        "orientation": 1.03,
+        "vehicle_position": {
+          "x": -3.24,
+          "y": 0.7,
+          "z": 5.38,
+          "orientation": 1.03,
+          "time": 0.0
+        }
+      },
+      {
+        "object_id": 3,
+        "class": "car",
+        "score": 0.6365931034088135,
+        "bbox_2d": [
+          457.76025390625,
+          344.204345703125,
+          489.0659484863281,
+          368.9496154785156
+        ],
+        "centroid_2d": [
+          473.4130859375,
+          356.57696533203125
+        ],
+        "dimensions_2d": [
+          31.305694580078125,
+          24.745269775390625
+        ],
+        "depth_value": 0.21568627450980393,
+        "centroid_3d": [
+          -0.55,
+          0.35,
+          2.94
+        ],
+        "dimensions_3d": [
+          1.52,
+          1.64,
+          3.85
+        ],
+        "orientation": -0.18,
+        "vehicle_position": {
+          "x": -0.55,
+          "y": 0.35,
+          "z": 2.94,
+          "orientation": -0.18,
+          "time": 0.0
+        },
+        "closest_vehicle": {
+          "object_id": 1,
+          "distance": 0.8
+        }
+      }
+    ]
+  },
+  {
+    "frame_number": 1,
+    "timestamp": 1746226399.380447,
+    "objects": [
+      {
+        "object_id": 1,
+        "class": "car",
+        "score": 0.7397127747535706,
+        "bbox_2d": [
+          394.4896545410156,
+          352.5433654785156,
+          429.4129638671875,
+          375.2542419433594
+        ],
+        "centroid_2d": [
+          411.9512939453125,
+          363.8988037109375
+        ],
+        "dimensions_2d": [
+          34.923309326171875,
+          22.71087646484375
+        ],
+        "depth_value": 0.2901960784313726,
+        "centroid_3d": [
+          -0.98,
+          0.45,
+          3.61
+        ],
+        "dimensions_3d": [
+          1.52,
+          1.64,
+          3.85
+        ],
+        "orientation": 0.15,
+        "vehicle_position": {
+          "x": -0.98,
+          "y": 0.45,
+          "z": 3.61,
+          "orientation": 0.15,
+          "time": 0.03
+        },
+        "vehicle_velocity": {
+          "speed": 0.0,
+          "speed_kmh": 0.0,
+          "lateral_velocity": 0.0,
+          "longitudinal_velocity": 0.0,
+          "lateral_acceleration": 0.0,
+          "longitudinal_acceleration": 0.0
+        },
+        "closest_vehicle": {
+          "object_id": 3,
+          "distance": 0.79
+        }
+      },
+      {
+        "object_id": 2,
+        "class": "car",
+        "score": 0.7867872714996338,
+        "bbox_2d": [
+          132.6499481201172,
+          345.56024169921875,
+          215.85043334960938,
+          399.286865234375
+        ],
+        "centroid_2d": [
+          174.25018310546875,
+          372.4235534667969
+        ],
+        "dimensions_2d": [
+          83.20048522949219,
+          53.72662353515625
+        ],
+        "depth_value": 0.48627450980392156,
+        "centroid_3d": [
+          -3.24,
+          0.7,
+          5.38
+        ],
+        "dimensions_3d": [
+          1.52,
+          1.64,
+          3.85
+        ],
+        "orientation": 1.03,
+        "vehicle_position": {
+          "x": -3.24,
+          "y": 0.7,
+          "z": 5.38,
+          "orientation": 1.03,
+          "time": 0.03
+        },
+        "vehicle_velocity": {
+          "speed": 0.0,
+          "speed_kmh": 0.0,
+          "lateral_velocity": 0.0,
+          "longitudinal_velocity": 0.0,
+          "lateral_acceleration": 0.0,
+          "longitudinal_acceleration": 0.0
+        }
+      },
+      {
+        "object_id": 3,
+        "class": "car",
+        "score": 0.6309121251106262,
+        "bbox_2d": [
+          457.8428649902344,
+          344.2149963378906,
+          488.91766357421875,
+          368.8291015625
+        ],
+        "centroid_2d": [
+          473.3802490234375,
+          356.52203369140625
+        ],
+        "dimensions_2d": [
+          31.074798583984375,
+          24.614105224609375
+        ],
+        "depth_value": 0.2196078431372549,
+        "centroid_3d": [
+          -0.55,
+          0.35,
+          2.95
+        ],
+        "dimensions_3d": [
+          1.52,
+          1.64,
+          3.85
+        ],
+        "orientation": -0.18,
+        "vehicle_position": {
+          "x": -0.55,
+          "y": 0.35,
+          "z": 2.95,
+          "orientation": -0.18,
+          "time": 0.03
+        },
+        "vehicle_velocity": {
+          "speed": 0.33,
+          "speed_kmh": 1.2,
+          "lateral_velocity": 0.0,
+          "longitudinal_velocity": 0.33,
+          "lateral_acceleration": 0.0,
+          "longitudinal_acceleration": 0.0
+        },
+        "closest_vehicle": {
+          "object_id": 1,
+          "distance": 0.79
+        }
+      }
+    ]
+  }
+]

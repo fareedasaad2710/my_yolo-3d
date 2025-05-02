@@ -23,7 +23,12 @@ def main():
     # ===============================================
     
     # Input/Output
-    source = 0  # Path to input video file or webcam index (0 for default camera)
+    video_path = "video3.mp4"  # Path to input video file
+    if not os.path.exists(video_path):
+        print(f"Error: Video file {video_path} not found")
+        return
+        
+    source = video_path  # Use the video file as source
     output_path = "output.mp4"  # Path to output video file
     
     # Model settings
@@ -87,11 +92,6 @@ def main():
     # Simplified approach - focus on 2D detection with depth information
     bbox3d_estimator = BBox3DEstimator()
     
-    # Initialize Bird's Eye View if enabled
-    if enable_bev:
-        # Use a scale that works well for the 1-5 meter range
-        bev = BirdEyeView(scale=60, size=(300, 300))  # Increased scale to spread objects out
-    
     # Open video source
     try:
         if isinstance(source, str) and source.isdigit():
@@ -113,9 +113,34 @@ def main():
     if fps == 0:  # Sometimes happens with webcams
         fps = 30
     
-    # Initialize video writer
-    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-    out = cv2.VideoWriter(output_path, fourcc, fps, (width, height))
+    # Initialize Bird's Eye View if enabled
+    if enable_bev:
+        # Use a scale that works well for the 1-5 meter range
+        bev = BirdEyeView(size=(300, 300), scale=60, camera_height=1.2)  # Using correct parameters
+    
+    # Initialize video writer with a more reliable codec
+    # Calculate the total width for side-by-side view (original frame + BEV)
+    total_width = width * 2  # Double width for side-by-side view
+    
+    # Use AVI container with MJPG codec which has broad compatibility
+    output_path = "output.avi"
+    fourcc = cv2.VideoWriter_fourcc(*'MJPG')
+    out = cv2.VideoWriter(output_path, fourcc, fps, (total_width, height))
+    
+    if not out.isOpened():
+        print(f"Error: Could not create video writer with MJPG codec")
+        # Try another widely supported codec
+        output_path = "output.avi"
+        fourcc = cv2.VideoWriter_fourcc(*'XVID')
+        out = cv2.VideoWriter(output_path, fourcc, fps, (total_width, height))
+        
+        if not out.isOpened():
+            print("Error: Could not create video writer with any codec")
+            return
+        else:
+            print("Successfully created video writer with XVID codec")
+    else:
+        print("Successfully created video writer with MJPG codec")
     
     # Initialize variables for FPS calculation
     frame_count = 0
@@ -234,42 +259,58 @@ def main():
                     print(f"Error drawing box: {e}")
                     continue
             
-            # Draw Bird's Eye View if enabled
-            if enable_bev:
-                try:
-                    # Reset BEV and draw objects
-                    bev.reset()
-                    for box_3d in boxes_3d:
-                        bev.draw_box(box_3d)
-                    bev_image = bev.get_image()
-                    
-                    # Resize BEV image to fit in the corner of the result frame
-                    bev_height = height // 4  # Reduced from height/3 to height/4 for better fit
-                    bev_width = bev_height
-                    
-                    # Ensure dimensions are valid
-                    if bev_height > 0 and bev_width > 0:
-                        # Resize BEV image
-                        bev_resized = cv2.resize(bev_image, (bev_width, bev_height))
-                        
-                        # Create a region of interest in the result frame
-                        roi = result_frame[height - bev_height:height, 0:bev_width]
-                        
-                        # Simple overlay - just copy the BEV image to the ROI
-                        result_frame[height - bev_height:height, 0:bev_width] = bev_resized
-                        
-                        # Add a border around the BEV visualization
-                        cv2.rectangle(result_frame, 
-                                     (0, height - bev_height), 
-                                     (bev_width, height), 
-                                     (255, 255, 255), 1)
-                        
-                        # Add a title to the BEV visualization
-                        cv2.putText(result_frame, "Bird's Eye View", 
-                                   (10, height - bev_height + 20), 
-                                   cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
-                except Exception as e:
-                    print(f"Error drawing BEV: {e}")
+            # Draw BEV
+            try:
+                # Reset BEV and draw objects
+                bev.reset()
+                for box_3d in boxes_3d:
+                    # Convert depth to float if it's an integer
+                    if isinstance(box_3d['depth_value'], int):
+                        box_3d['depth_value'] = float(box_3d['depth_value'])
+                    bev.draw_box(box_3d)
+                
+                # Get BEV image
+                bev_frame = bev.get_image()
+                
+                # Create a copy of the result frame for the output video
+                output_frame = result_frame.copy()
+                
+                if bev_frame is not None:
+                    # Convert to uint8 if needed
+                    if bev_frame.dtype != np.uint8:
+                        bev_frame = (bev_frame * 255).astype(np.uint8)
+                    # Resize to match frame dimensions
+                    bev_frame = cv2.resize(bev_frame, (width, height))
+                    # Stack frames horizontally
+                    try:
+                        combined_frame = np.hstack((output_frame, bev_frame))
+                        # Ensure the combined frame has the correct dimensions
+                        if combined_frame.shape[1] != total_width:
+                            print(f"Warning: Combined frame width ({combined_frame.shape[1]}) doesn't match expected width ({total_width})")
+                            # Resize to match expected dimensions
+                            combined_frame = cv2.resize(combined_frame, (total_width, height))
+                        # Write the combined frame
+                        out.write(combined_frame)
+                    except Exception as e:
+                        print(f"Error creating combined frame: {e}")
+                        # Fallback: create a blank frame of the correct size
+                        combined_frame = np.zeros((height, total_width, 3), dtype=np.uint8)
+                        # Copy the original frame to the left side
+                        combined_frame[:, :width, :] = output_frame
+                        out.write(combined_frame)
+                else:
+                    # If BEV frame is None, create a blank frame for the right side
+                    combined_frame = np.zeros((height, total_width, 3), dtype=np.uint8)
+                    # Copy the original frame to the left side
+                    combined_frame[:, :width, :] = output_frame
+                    out.write(combined_frame)
+            except Exception as e:
+                print(f"Error in BEV visualization: {e}")
+                # Create a safe frame to write
+                safe_frame = np.zeros((height, total_width, 3), dtype=np.uint8)
+                if frame.shape[0] == height and frame.shape[1] == width:
+                    safe_frame[:, :width, :] = frame
+                out.write(safe_frame)
             
             # Calculate and display FPS
             frame_count += 1
@@ -292,9 +333,6 @@ def main():
                 result_frame[0:depth_height, 0:depth_width] = depth_resized
             except Exception as e:
                 print(f"Error adding depth map to result: {e}")
-            
-            # Write frame to output video
-            out.write(result_frame)
             
             # Display frames
             cv2.imshow("3D Object Detection", result_frame)
@@ -323,6 +361,8 @@ def main():
     cv2.destroyAllWindows()
     
     print(f"Processing complete. Output saved to {output_path}")
+    print("Important: If the output video doesn't play properly, try converting it with:")
+    print(f"ffmpeg -i {output_path} -c:v libx264 -preset medium -crf 23 converted_output.mp4")
 
 if __name__ == "__main__":
     try:
