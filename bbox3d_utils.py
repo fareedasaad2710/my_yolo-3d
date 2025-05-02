@@ -594,7 +594,8 @@ class BirdEyeView:
     """
     Bird's Eye View visualization
     """
-    def __init__(self, size=(400, 400), scale=30, camera_height=1.2):
+    # def __init__(self, size=(400, 400), scale=30, camera_height=1.2, frame_width=640):
+    def __init__(self, size=(300, 300), scale=60, camera_height=1.2):
         """
         Initialize the Bird's Eye View visualizer
         
@@ -602,10 +603,12 @@ class BirdEyeView:
             size (tuple): Size of the BEV image (width, height)
             scale (float): Scale factor (pixels per meter)
             camera_height (float): Height of the camera above ground (meters)
+            frame_width (int): Width of the input frame for proper scaling
         """
         self.width, self.height = size
         self.scale = scale
         self.camera_height = camera_height
+        # self.frame_width = frame_width
         
         # Create empty BEV image
         self.bev_image = np.zeros((self.height, self.width, 3), dtype=np.uint8)
@@ -666,14 +669,14 @@ class BirdEyeView:
                 continue
             
             # Draw tick mark - thicker for whole meters
-            thickness = 2 if dist.is_integer() else 1
+            thickness = 2 if isinstance(dist, int) or (isinstance(dist, float) and dist.is_integer()) else 1
             cv2.line(self.bev_image, 
                     (self.origin_x - 5, y), 
                     (self.origin_x + 5, y), 
                     (120, 120, 120), thickness)
             
             # Only show text for whole meters
-            if dist.is_integer():
+            if isinstance(dist, int) or (isinstance(dist, float) and dist.is_integer()):
                 cv2.putText(self.bev_image, f"{int(dist)}m", 
                            (self.origin_x + 10, y + 4), 
                            cv2.FONT_HERSHEY_SIMPLEX, 0.4, (180, 180, 180), 1)
@@ -734,6 +737,7 @@ class BirdEyeView:
                 center_x_2d = (x1 + x2) / 2
                 image_width = self.bev_image.shape[1]
                 rel_x = (center_x_2d / image_width) - 0.5
+                # rel_x = (center_x_2d / self.frame_width) - 0.5
                 bev_x = self.origin_x + int(rel_x * self.width * 0.6)
             else:
                 bev_x = self.origin_x
